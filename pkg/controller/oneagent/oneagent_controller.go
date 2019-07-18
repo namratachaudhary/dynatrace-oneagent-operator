@@ -259,7 +259,6 @@ func (r *ReconcileOneAgent) reconcileNodesMarkedForDeletion(
 	instance *dynatracev1alpha1.OneAgent,
 	dtc dtclient.Client) error {
 
-	// nodes := &corev1.NodeList(metav1.ListOptions{})
 	nodeList := &corev1.NodeList{}
 	labelSelector := labels.SelectorFromSet(labels.Set(instance.Spec.NodeSelector))
 	listOps := &client.ListOptions{
