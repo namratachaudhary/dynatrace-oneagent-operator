@@ -54,7 +54,7 @@ type Client interface {
 	// GetAPIURLHost returns a CommunicationHost for the client's API URL. Or error, if failed to be parsed.
 	GetAPIURLHost() (CommunicationHost, error)
 
-	PostMarkedForTerminationEvent(nodeID string) (string, error)
+	PostMarkedForTerminationEvent(nodeIP string) (string, error)
 }
 
 // CommunicationHost represents a host used in a communication endpoint.
