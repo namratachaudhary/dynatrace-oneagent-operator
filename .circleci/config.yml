@@ -58,47 +58,6 @@ jobs:
       - run: docker build . -f ./build/Dockerfile -t $OAO_IMAGE:snapshot
       - run: docker push $OAO_IMAGE:snapshot
 
-  deploy-release:
-    <<: *defaults
-    steps:
-      - setup_remote_docker
-      - run: |
-          mkdir -p ~/.docker && chmod 0700 ~/.docker
-          touch ~/.docker/config.json && chmod 0600 ~/.docker/config.json
-          base64 -d >~/.docker/config.json <<<"$OAO_DOCKER_AUTH"
-      - attach_workspace:
-          at: .
-      - run: docker build . -f ./build/Dockerfile -t $OAO_IMAGE:$CIRCLE_TAG
-      - run: docker push $OAO_IMAGE:$CIRCLE_TAG
-
-  deploy-release-rhcc:
-    <<: *defaults
-    steps:
-      - setup_remote_docker
-      - run: |
-          mkdir -p ~/.docker && chmod 0700 ~/.docker
-          touch ~/.docker/config.json && chmod 0600 ~/.docker/config.json
-          base64 -d >~/.docker/config.json <<<"$OAO_DOCKER_AUTH_RHCC"
-      - attach_workspace:
-          at: .
-      - run: docker build . -f ./build/Dockerfile-rhel -t $OAO_IMAGE_RHCC:$CIRCLE_TAG
-      - run: docker push $OAO_IMAGE_RHCC:$CIRCLE_TAG
-
-  deploy-release-snapshot:
-    <<: *defaults
-    steps:
-      - setup_remote_docker
-      - run: |
-          mkdir -p ~/.docker && chmod 0700 ~/.docker
-          touch ~/.docker/config.json && chmod 0600 ~/.docker/config.json
-          base64 -d >~/.docker/config.json <<<"$OAO_DOCKER_AUTH"
-      - attach_workspace:
-          at: .
-      - run: |
-          export RELEASE_TAG=${CIRCLE_BRANCH//release-/v}-snapshot
-          docker build . -f ./build/Dockerfile -t $OAO_IMAGE:$RELEASE_TAG
-          docker push $OAO_IMAGE:$RELEASE_TAG
-
 workflows:
   version: 2
   build-release:
@@ -107,31 +66,3 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - deploy-snapshot:
-          requires:
-            - build
-          filters:
-            branches:
-              only: /^master$/
-      - deploy-release:
-          requires:
-            - build
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
-      - deploy-release-rhcc:
-          requires:
-            - build
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
-      - deploy-release-snapshot:
-          requires:
-            - build
-          filters:
-            branches:
-              only: /release-.*/
