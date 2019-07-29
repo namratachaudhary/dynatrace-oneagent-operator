@@ -34,8 +34,14 @@ jobs:
               - /go/src/github.com/Dynatrace/dynatrace-oneagent-operator/vendor
               - /go/pkg
       - run:
+          name: Install godacov
+          command: go get github.com/schrej/godacov
+      - run:
           name: Run tests
           command: go test -cover -v $(go list ./... | circleci tests split)
+      - run:
+          name: Run tests with codacy upload
+          command: godacov -t $CODACY_TOKEN -r ./coverage.out -c $CIRCLE_SHA1
       - run:
           name: Build binary
           command: go build -o ./build/_output/bin/dynatrace-oneagent-operator ./cmd/manager
