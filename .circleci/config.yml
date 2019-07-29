@@ -45,19 +45,6 @@ jobs:
             - LICENSE
             - build
 
-  deploy-snapshot:
-    <<: *defaults
-    steps:
-      - setup_remote_docker
-      - run: |
-          mkdir -p ~/.docker && chmod 0700 ~/.docker
-          touch ~/.docker/config.json && chmod 0600 ~/.docker/config.json
-          base64 -d >~/.docker/config.json <<<"$OAO_DOCKER_AUTH"
-      - attach_workspace:
-          at: .
-      - run: docker build . -f ./build/Dockerfile -t $OAO_IMAGE:snapshot
-      - run: docker push $OAO_IMAGE:snapshot
-
 workflows:
   version: 2
   build-release:
