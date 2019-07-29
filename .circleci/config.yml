@@ -41,7 +41,7 @@ jobs:
           command: go test -v $(go list ./...) -coverprofile=coverage.out
       - run:
           name: Run tests with codacy upload
-          command: godacov -t $CODACY_TOKEN -r ./coverage.out -c $CIRCLE_SHA1
+          command: echo $CODACY_TOKEN && godacov -t $CODACY_TOKEN -r ./coverage.out -c $CIRCLE_SHA1
       - run:
           name: Build binary
           command: go build -o ./build/_output/bin/dynatrace-oneagent-operator ./cmd/manager
