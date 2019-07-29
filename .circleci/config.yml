@@ -38,7 +38,7 @@ jobs:
           command: go get github.com/schrej/godacov
       - run:
           name: Run tests
-          command: go test -cover -v $(go list ./... | circleci tests split)
+          command: go test -coverprofile=coverage.out
       - run:
           name: Run tests with codacy upload
           command: godacov -t $CODACY_TOKEN -r ./coverage.out -c $CIRCLE_SHA1
