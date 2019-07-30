@@ -40,8 +40,14 @@ jobs:
           name: Run tests
           command: go test -v $(go list ./...) -coverprofile=coverage.out
       - run:
-          name: Run tests with codacy upload
+          name: codacy upload
           command: godacov -t $CODACY_TOKEN -r ./coverage.out -c $CIRCLE_SHA1
+      - run: 
+          name: Install goveralls
+          command: go get github.com/mattn/goveralls
+      - run:
+          name: Upload to coveralls
+          command: goveralls -coverprofile=coverage.out -service circleci.com -repotoken $COVERALLS_TOKEN
       - run:
           name: Build binary
           command: go build -o ./build/_output/bin/dynatrace-oneagent-operator ./cmd/manager
